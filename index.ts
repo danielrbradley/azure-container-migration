@@ -18,50 +18,38 @@ const sharedKeys = operationalinsights.getSharedKeysOutput({
   workspaceName: workspace.name,
 });
 
-const kubeEnvironment = new app.ManagedEnvironment(
-  "kubeEnvironment",
-  {
-    resourceGroupName: resourceGroup.name,
-    name: "kubeEnvironmentc954af07",
-    appLogsConfiguration: {
-      destination: "log-analytics",
-      logAnalyticsConfiguration: {
-        customerId: workspace.customerId,
-        sharedKey: sharedKeys.primarySharedKey?.apply((k) => k!),
-      },
+const kubeEnvironment = new app.ManagedEnvironment("kubeEnvironment", {
+  resourceGroupName: resourceGroup.name,
+  name: "kubeEnvironmentc954af07",
+  appLogsConfiguration: {
+    destination: "log-analytics",
+    logAnalyticsConfiguration: {
+      customerId: workspace.customerId,
+      sharedKey: sharedKeys.primarySharedKey?.apply((k) => k!),
     },
   },
-  {
-    aliases: [{ name: "kubeEnvironmentImported" }],
-  }
-);
+});
 
-const containerAppSimple = new app.ContainerApp(
-  "containerAppSimple",
-  {
-    resourceGroupName: resourceGroup.name,
-    name: "container-app-simple",
-    managedEnvironmentId: kubeEnvironment.id,
-    configuration: {
-      ingress: {
-        external: true,
-        targetPort: 80,
-      },
-    },
-    template: {
-      containers: [
-        {
-          name: "web",
-          image: "nginx",
-          resources: { cpu: 0.25, memory: "0.5Gi" },
-        },
-      ],
+const containerAppSimple = new app.ContainerApp("containerAppSimple", {
+  resourceGroupName: resourceGroup.name,
+  name: "container-app-simple",
+  managedEnvironmentId: kubeEnvironment.id,
+  configuration: {
+    ingress: {
+      external: true,
+      targetPort: 80,
     },
   },
-  {
-    aliases: [{ name: "containerAppSimpleImported" }],
-  }
-);
+  template: {
+    containers: [
+      {
+        name: "web",
+        image: "nginx",
+        resources: { cpu: 0.25, memory: "0.5Gi" },
+      },
+    ],
+  },
+});
 
 export const containerAppSimpleUrl = pulumi.interpolate`https://${containerAppSimple.configuration.apply(
   (c) => c?.ingress?.fqdn
