@@ -19,7 +19,7 @@ const sharedKeys = operationalinsights.getSharedKeysOutput({
 });
 
 const kubeEnvironment = new app.ManagedEnvironment(
-  "kubeEnvironmentImported",
+  "kubeEnvironment",
   {
     resourceGroupName: resourceGroup.name,
     name: "kubeEnvironmentc954af07",
@@ -32,14 +32,12 @@ const kubeEnvironment = new app.ManagedEnvironment(
     },
   },
   {
-    import:
-      "/subscriptions/0282681f-7a9e-424b-80b2-96babd57a8a1/resourceGroups/resourceGroup87d1d5d8/providers/Microsoft.App/managedenvironments/kubeEnvironmentc954af07",
-    ignoreChanges: ["appLogsConfiguration.logAnalyticsConfiguration.sharedKey"],
+    aliases: [{ name: "kubeEnvironmentImported" }],
   }
 );
 
 const containerAppSimple = new app.ContainerApp(
-  "containerAppSimpleImported",
+  "containerAppSimple",
   {
     resourceGroupName: resourceGroup.name,
     name: "container-app-simple",
@@ -61,15 +59,7 @@ const containerAppSimple = new app.ContainerApp(
     },
   },
   {
-    import:
-      "/subscriptions/0282681f-7a9e-424b-80b2-96babd57a8a1/resourceGroups/resourceGroup87d1d5d8/providers/Microsoft.App/containerApps/container-app-simple",
-    ignoreChanges: [
-      "configuration.activeRevisionsMode",
-      "configuration.ingress.traffic",
-      "configuration.ingress.transport",
-      "configuration.ingress.allowInsecure",
-      "template.scale",
-    ],
+    aliases: [{ name: "containerAppSimpleImported" }],
   }
 );
 
