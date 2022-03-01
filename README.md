@@ -26,7 +26,7 @@ Once the cloud resources have been migrated by Microsoft, update your resources 
 
 1. Update your imports:
 
-   ```typescript
+   ```diff
    - import * as web from "@pulumi/azure-native/web";
    + import * as app from "@pulumi/azure-native/app";
    ```
@@ -37,19 +37,19 @@ Once the cloud resources have been migrated by Microsoft, update your resources 
    - Change `KubeEnvironment` to `ManagedEnvironment`
    - Change the Pulumi ID for the resource
 
-   ```typescript
+   ```diff
    - const environment = new web.KubeEnvironment("kubeEnvironment", {
    + const environment = new app.ManagedEnvironment("managedEnvironment", {
    ```
 
-   ```typescript
+   ```diff
    - const containerApp = new web.ContainerApp("containerApp", {
    + const containerApp = new app.ContainerApp("containerAppImported", {
    ```
 
 3. Fix arguments which have been renamed e.g.
 
-   ```typescript
+   ```diff
    const containerApp = new app.ContainerApp("containerAppImported", {
    -   kubeEnvironmentId: environment.id,
    +   managedEnvironmentId: environment.id,
@@ -59,7 +59,7 @@ Once the cloud resources have been migrated by Microsoft, update your resources 
 
    - Add the `import` option with the Resource ID for each resource (this can be found in the JSON view in the portal).
 
-   ```typescript
+   ```diff
    const kubeEnvironment = new app.ManagedEnvironment(
      "managedEnvironment",
      {
@@ -98,7 +98,7 @@ Once the cloud resources have been migrated by Microsoft, update your resources 
 6. Remove the `import` and `ignoreChanges` before the next deploy.
 7. If you'd like the resources to have their original name, [add an alias](https://www.pulumi.com/docs/intro/concepts/resources/options/aliases/) for the old name (this can be removed again once a deploy has been completed):
 
-   ```typescript
+   ```diff
    const containerApp = new app.ContainerApp(
    -   "containerAppImported",
    +   "containerApp",
